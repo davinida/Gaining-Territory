@@ -2,6 +2,17 @@ import random
 from itertools import combinations
 from shapely.geometry import LineString, Point
 
+# 그을 수 있는 선의 개수를 파악하면 유리하게 가져갈 수 있다.
+# 각각의 점에 connected 될 수 있는 갯수
+# 남이 삼각형을 만들 수 있으면 나쁜 수
+# 게임에서 초반부 중반부에 좋은 규칙
+# min-max, 휴리스틱도 중요, tree search
+# 너무 순위에만 집착하여 규칙기반으로 하면 안된다
+# 게임을 잘 아는게 먼저
+# move generator 잘 만들고 휴리스틱 잘 정의
+# 규칙은 if, when으로 해도 됨
+# 인터넷의 자료를 많이 보세요
+# 게임트리 작성해서 게임 만들어봤다.
 class MACHINE():
     """
         [ MACHINE ]

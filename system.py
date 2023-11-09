@@ -36,7 +36,7 @@ class SYSTEM():
         self.score = [0, 0] # USER, MACHINE
         self.drawn_lines = [] # Drawn Lines
         self.board_size = 7 # 7 x 7 Matrix
-        self.num_dots = 0
+        self.num_dots = 0 # 랜덤으로 점을 사용할 때
         self.whole_points = []
         self.location = []
         self.triangles = [] # [(a, b), (c, d), (e, f)]
@@ -44,7 +44,7 @@ class SYSTEM():
         self.turn = None
         self.interval = None
         self.offset = None
-        self.machine = MACHINE()
+        self.machine = MACHINE() # 머신을 객체로 만들어서 사용하면 됌
 
         self.get_score = False
 
@@ -176,7 +176,7 @@ class SYSTEM():
         self.root.mainloop()
     
     # Canvas(Board)-related Functions
-    def set_new_board(self):
+    def set_new_board(self): # 게임이 시작될 때 시작되는 함수
         """
             초기 Board 설정
         """
@@ -202,8 +202,8 @@ class SYSTEM():
         self.interval = CANVAS_SIZE // (self.board_size+1)
         self.offset = (CANVAS_SIZE % (self.board_size+1)) // 2
         self.location = [x*self.interval+self.offset for x in range(1, (self.board_size+1))]
-        idx_offset = 200 // self.board_size
-
+        idx_offset = 200 // self.board_size # 그림을 그리기 위한 변수들
+ 
         # Background Grid
         for loc in self.location:
             self.line((loc, self.offset+self.interval), (loc, 500-self.interval), color=GRID_COLOR)
@@ -237,7 +237,7 @@ class SYSTEM():
         elif self.turn == "MACHINE":
             self.last_triangle = self.board.create_polygon([self.offset+self.interval*(x+1) for x in list(chain(*triangle))], fill=color, outline=LINE_COLOR, width=2)
 
-    def user_go(self):
+    def user_go(self): # go 버튼을 눌렀을 때 실행되는 함수
         start_x = int(self.start_x.get())
         start_y = int(self.start_y.get())
         end_x = int(self.end_x.get())
@@ -268,7 +268,7 @@ class SYSTEM():
         else:
             self.label_warning.config(text="Check the turn or the input!")
     
-    def machine_go(self):
+    def machine_go(self): # go 버튼을 눌렀을 때 실행되는 함수
         self.machine.score = self.score
         self.machine.drawn_lines = self.drawn_lines
         self.machine.whole_points = self.whole_points
@@ -278,7 +278,7 @@ class SYSTEM():
         line = self.machine.find_best_selection()
         line = self.organize_points(line)
 
-        if self.check_availability("MACHINE", line ):
+        if self.check_availability("MACHINE", line ): # 가능한지
             self.label_warning.config(text="")
             self.drawn_lines.append(line)
 
@@ -331,7 +331,7 @@ class SYSTEM():
         condition5 = (self.turn==turn)
 
         if condition1 and condition2 and condition3 and condition4 and condition5:
-            return True
+            return True # 게임이 끝나는 조건
         else:
             return False    
     
