@@ -1,4 +1,4 @@
-import random
+import random, math
 from itertools import combinations
 from shapely.geometry import LineString, Point
 
@@ -10,8 +10,7 @@ from shapely.geometry import LineString, Point
 # 너무 순위에만 집착하여 규칙기반으로 하면 안된다
 # 게임을 잘 아는게 먼저
 # move generator 잘 만들고 휴리스틱 잘 정의
-# 규칙은 if, when으로 해도 됨
-# 인터넷의 자료를 많이 보세요
+# 규칙은 if, when으로 해도 됨']
 # 게임트리 작성해서 게임 만들어봤다.
 class MACHINE():
     """
@@ -36,8 +35,40 @@ class MACHINE():
         self.triangles = [] # [(a, b), (c, d), (e, f)]
 
     def find_best_selection(self):
+        all_endpoints = list(set([point for line in self.drawn_lines for point in line])) # 현재 선분에 포함된 점 리스트
+        unconnected_available = [[point1, point2] for (point1, point2) in list(combinations(self.whole_points, 2)) if self.check_availability([point1, point2]) and point1 not in all_endpoints and point2 not in all_endpoints]
         available = [[point1, point2] for (point1, point2) in list(combinations(self.whole_points, 2)) if self.check_availability([point1, point2])]
-        return random.choice(available)
+        if not self.drawn_lines: # 선공일 경우(그려진 선이 없을때)
+            scores = [self.calculate_line_score(line) for line in available]
+            best_line = available[scores.index(max(scores))]  # 점수가 가장 높은 선분 선택
+            print("나 선공")
+            return best_line
+        elif len(self.drawn_lines) == 1: # 후공일 경우(1개의 선분이 그려져 있을때)
+            print("나 후공")
+            scores = [self.calculate_line_score(line) for line in unconnected_available]
+            best_line = unconnected_available[scores.index(max(scores))]  # 점수가 가장 높은 선분 선택
+            return best_line
+        else: # 선공, 후공이 아닌 모든 상황
+            if unconnected_available: # 연결하지 않는 선분이 남은 경우
+                return random.choice(unconnected_available)
+            else:
+                return random.choice(available)
+                    
+    def calculate_line_score(self, line): # 선공 시 가장 line_score가 높은 선분을 선택하기 위해 만든 함수(중심과 가장 가깝고 가장 길어야함)
+        min_x = min(point[0] for point in self.whole_points)  # 선택된 점들의 최소 x좌표
+        max_x = max(point[0] for point in self.whole_points)  # 선택된 점들의 최대 x좌표
+        min_y = min(point[1] for point in self.whole_points)  # 선택된 점들의 최소 y좌표
+        max_y = max(point[1] for point in self.whole_points)  # 선택된 점들의 최대 y좌표
+
+        center_point = [(min_x + max_x) / 2, (min_y + max_y) / 2]  # 선택된 점들을 포함하는 직사각형의 중심점 계산
+        line_center = [(line[0][0] + line[1][0]) / 2, (line[0][1] + line[1][1]) / 2]  # 선분의 중심점 계산
+        distance = math.sqrt((line_center[0] - center_point[0])**2 + (line_center[1] - center_point[1])**2)  # 선분의 중심점과 게임판 중심점 간의 거리 계산
+        length = math.sqrt((line[0][0] - line[1][0])**2 + (line[0][1] - line[1][1])**2)  # 선분의 길이 계산
+
+        # 선분의 길이에서 선분의 중심점과 게임판 중심점 간의 거리를 뺌
+        return length - distance
+
+
     
     def check_availability(self, line):
         line_string = LineString(line)

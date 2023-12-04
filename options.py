@@ -5,7 +5,7 @@ PLAYERS = ["USER", "MACHINE"]
     COLOR MAP: https://cs111.wellesley.edu/archive/cs111_fall14/public_html/labs/lab12/tkintercolor.html
 """
 BACKGROUND = "seashell3"
-PROGRAM_SIZE = "800x600"
+PROGRAM_SIZE = "730x600"
 USER_COLOR = "indian red"
 MACHINE_COLOR = "steel blue"
 GRID_COLOR = "gainsboro"
@@ -20,6 +20,6 @@ DRAWN_LINE_COLOR = "blue"
 
 # Circles
 CIRCLE_WIDTH = 4
-CIRCLE_COLOR = "white"
+CIRCLE_COLOR = "black"
 RADIUS = 8
 
